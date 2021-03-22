@@ -3,7 +3,7 @@ import SimpleSchema from "simpl-schema";
 
 const PlaqueRecords = new Mongo.Collection("plaqueRecords");
 PlaqueRecords.schema = new SimpleSchema({
-  processingTime: { type: Number },
+  processingTime: { type: Number, optional: true },
   timestamp: { type: String },
   xMin: { type: Number },
   yMin: { type: Number },
@@ -13,7 +13,7 @@ PlaqueRecords.schema = new SimpleSchema({
   score: { type: Number },
   dscore: { type: Number },
   filename: { type: String },
-  version: { type: Number },
+  version: { type: Number, optional: true },
   cameraId: { type: String },
 });
 
