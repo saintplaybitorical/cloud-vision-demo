@@ -2,6 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { WebApp } from "meteor/webapp";
 import { get } from "lodash";
 import formidable from "formidable";
+import bodyParser from "body-parser";
 
 import { PlaqueRecordsCollection } from "/imports/api/plaqueRecords";
 import { CamerasCollection } from "/imports/api/cameras";
@@ -11,6 +12,7 @@ const bound = Meteor.bindEnvironment((callback) => {
 });
 
 WebApp.connectHandlers
+  .use(bodyParser.json())
   .use("/api/push", function (req, res) {
     if (req.method !== "POST") {
       res.writeHead(404, { "Content-Type": "application/json" });
@@ -30,8 +32,7 @@ WebApp.connectHandlers
         let body = {};
 
         try {
-          body = JSON.parse(fields.json);
-          body = JSON.parse(body).data;
+          body = JSON.parse(fields.json).data;
         } catch (err) {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(`There was an error parsing json: ${err}`);
