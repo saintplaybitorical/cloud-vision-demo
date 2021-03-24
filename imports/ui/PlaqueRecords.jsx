@@ -64,7 +64,7 @@ export const PlaqueRecords = () => {
                   <TableCell align="center">{new Date(plaque.timestamp).toLocaleString()}</TableCell>
                   <TableCell align="center">{plaque.plate.toUpperCase()}</TableCell>
                   <TableCell align="center">
-                    <img src={`/${plaque.filename}`} alt={plaque.plate.toUpperCase()} width="80" />
+                    <img src={`/static/${plaque.filename}`} alt={plaque.plate.toUpperCase()} width="80" />
                   </TableCell>
                   <TableCell align="center">{plaque.cameraId}</TableCell>
                   <TableCell align="center">{plaque.score}</TableCell>
