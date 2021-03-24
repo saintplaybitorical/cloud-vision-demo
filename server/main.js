@@ -7,9 +7,20 @@ import bodyParser from "body-parser";
 import { PlaqueRecordsCollection } from "/imports/api/plaqueRecords";
 import { CamerasCollection } from "/imports/api/cameras";
 
+const fs = Npm.require("fs");
+const path = Npm.require("path");
 const bound = Meteor.bindEnvironment((callback) => {
   callback();
 });
+
+function ensureDirectoryExistence(filePath) {
+  var dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
+}
 
 WebApp.connectHandlers
   .use(bodyParser.json())
@@ -21,11 +32,28 @@ WebApp.connectHandlers
 
     const form = new formidable.IncomingForm();
 
-    form.parse(req, (err, fields) => {
+    form.parse(req, (err, fields, files) => {
       bound(() => {
         if (err) {
           res.writeHead(500, { "Content-Type": "application/json" });
           res.end(`There was an error parsing form: ${err}`);
+          return;
+        }
+
+        /**
+         * @type {File|null} file
+         */
+        let file = null;
+        try {
+          file = files.upload;
+        } catch (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          return res.end(`There was an error ${error}`);
+        }
+
+        if (!file) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end("Image file was not present request");
           return;
         }
 
@@ -41,9 +69,26 @@ WebApp.connectHandlers
 
         let newPlaqueRecord;
 
-        if (!body || !body.results || !Array.isArray(body.results)) {
+        if (
+          !body ||
+          !body.results ||
+          !body.filename ||
+          !Array.isArray(body.results)
+        ) {
           res.writeHead(400, { "Content-Type": "application/json" });
           return res.end("there were no valid results in request");
+        }
+
+        try {
+          const publicPath =
+            process.env["METEOR_SHELL_DIR"] + "/../../../public/";
+          const actualPath = path.join(publicPath, body.filename);
+
+          ensureDirectoryExistence(actualPath);
+          fs.copyFileSync(file.path, actualPath);
+        } catch (error) {
+          res.writeHead(500, { "Content-Type": "application/json" });
+          return res.end(`There was an error writing file: ${error}`);
         }
 
         try {

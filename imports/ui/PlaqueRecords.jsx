@@ -51,13 +51,9 @@ export const PlaqueRecords = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell align="center">Timestamp</TableCell>
-                <TableCell align="center">Coord X</TableCell>
-                <TableCell align="center">Coord Y</TableCell>
-                <TableCell align="center">Width</TableCell>
-                <TableCell align="center">Height</TableCell>
-                <TableCell align="center">Image</TableCell>
+                <TableCell align="center">Date</TableCell>
                 <TableCell align="center">Plate</TableCell>
+                <TableCell align="center">Image</TableCell>
                 <TableCell align="center">Camera</TableCell>
                 <TableCell align="center">Score</TableCell>
               </TableRow>
@@ -66,14 +62,10 @@ export const PlaqueRecords = () => {
               {plaques.filter(plaque => !cameraId || plaque.cameraId === cameraId).map((plaque) => (
                 <TableRow key={plaque._id} id={plaque._id} hover>
                   <TableCell align="center">{new Date(plaque.timestamp).toLocaleString()}</TableCell>
-                  <TableCell align="center">{plaque.xMin}</TableCell>
-                  <TableCell align="center">{plaque.yMin}</TableCell>
-                  <TableCell align="center">{plaque.xMax - plaque.xMin}</TableCell>
-                  <TableCell align="center">{plaque.yMax - plaque.yMin}</TableCell>
+                  <TableCell align="center">{plaque.plate.toUpperCase()}</TableCell>
                   <TableCell align="center">
-                    <img src={`/${plaque.filename}`} alt={plaque.plate} width="80" />
+                    <img src={`/${plaque.filename}`} alt={plaque.plate.toUpperCase()} width="80" />
                   </TableCell>
-                  <TableCell align="center">{plaque.plate}</TableCell>
                   <TableCell align="center">{plaque.cameraId}</TableCell>
                   <TableCell align="center">{plaque.score}</TableCell>
                 </TableRow>
