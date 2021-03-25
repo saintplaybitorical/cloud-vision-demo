@@ -18,7 +18,11 @@ const bound = Meteor.bindEnvironment((callback) => {
 WebApp.rawConnectHandlers.use((req, res, next) => {
   const re = /^\/static\/(.*)$/.exec(req.url);
   if (re) {
-    const filePath = path.join(process.env.PWD, "/public/.#static/", re[1]);
+    const filePath = path.join(
+      process.env["METEOR_SHELL_DIR"],
+      "/../../../public/.#static/",
+      re[1]
+    );
     try {
       const type = mime.getType(filePath);
       const data = fs.readFileSync(filePath);
