@@ -20,6 +20,9 @@
     "sharp": "^0.27.2",
     "simpl-schema": "^1.10.2"
   },
+  "engines": {
+    "node": "12"
+  },
   "meteor": {
     "mainModule": {
       "client": "client/main.jsx",
