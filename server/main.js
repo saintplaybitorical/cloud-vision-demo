@@ -15,6 +15,8 @@ const bound = Meteor.bindEnvironment((callback) => {
   callback();
 });
 
+const PIXELS_TO_WRAP_IMAGE = 10;
+
 WebApp.rawConnectHandlers.use((req, res, next) => {
   const re = /^\/static\/(.*)$/.exec(req.url);
   if (re) {
@@ -109,14 +111,16 @@ WebApp.connectHandlers
 
           sharpPromise = sharp(file.path)
             .extract({
-              left: get(highestScoreResult, "box.xmin"),
-              top: get(highestScoreResult, "box.ymin"),
+              left: get(highestScoreResult, "box.xmin") - PIXELS_TO_WRAP_IMAGE,
+              top: get(highestScoreResult, "box.ymin") - PIXELS_TO_WRAP_IMAGE,
               width:
                 get(highestScoreResult, "box.xmax") -
-                get(highestScoreResult, "box.xmin"),
+                get(highestScoreResult, "box.xmin") +
+                2 * PIXELS_TO_WRAP_IMAGE,
               height:
                 get(highestScoreResult, "box.ymax") -
-                get(highestScoreResult, "box.ymin"),
+                get(highestScoreResult, "box.ymin") +
+                2 * PIXELS_TO_WRAP_IMAGE,
             })
             .toFile(actualPath);
         } catch (error) {
